@@ -1,9 +1,9 @@
 import express from 'express';
 import dotenv from 'dotenv';
 
-import route from './router/authRoute.js'
-import projectRoute from './router/projectRoute.js';
-import tasksRoute from './router/taskRoute.js'
+import route from './router/authRoutes.js'
+import projectRoute from './router/projectRoutes.js';
+import tasksRoute from './router/taskRoutes.js'
 import { error } from './middleware/errorMiddleware.js';
 dotenv.config();
 

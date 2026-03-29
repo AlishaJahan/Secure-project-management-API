@@ -3,7 +3,7 @@ import { authorizeRoles } from '../middleware/roleMiddleware.js'
 import { viewProject, viewProjectById, createProject, deleteProject, assignUserToProject, getAssignedProjects, unassignUserFromProject } from "../controller/projectController.js";
 import { verifyToken } from "../middleware/authMiddleware.js";
 import { validate } from "../middleware/validation.js";
-import { projectSchema, projectAssignmentSchema, projectUnassignmentSchema, listQuerySchema } from "../utils/schemas.js";
+import { projectSchema, projectAssignmentSchema, projectUnassignmentSchema, listQuerySchema } from "../utils/validationSchemas.js";
 
 const route = Router();
 
