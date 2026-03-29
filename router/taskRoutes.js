@@ -3,7 +3,7 @@ import { verifyToken } from "../middleware/authMiddleware.js";
 import { createTask, deleteTask, updateTask, viewTasks, viewTasksById, unassignTask } from "../controller/taskController.js";
 import { authorizeRoles } from "../middleware/roleMiddleware.js";
 import { validate } from "../middleware/validation.js";
-import { taskSchema, taskUpdateSchema, listQuerySchema } from "../utils/schemas.js";
+import { taskSchema, taskUpdateSchema, listQuerySchema } from "../utils/validationSchemas.js";
 
 
 const route = Router();
