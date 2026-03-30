@@ -20,7 +20,7 @@ export const register = async (req, res, next) => {
       })
     }
     const hashPassword = await bcrypt.hash(password, 10);
-    await db.query('INSERT INTO users (name, email, password_hash, role) VALUES(?,?,?,?)', [name, email, hashPassword, role])
+    await db.query('INSERT INTO users (name, email, password, role) VALUES(?,?,?,?)', [name, email, hashPassword, role])
     return res.status(201).json({
       status: 201,
       message: "User register successfully",
@@ -46,7 +46,7 @@ export const login = async (req, res, next) => {
     }
 
     const user = users[0]
-    const comparePassword = await bcrypt.compare(password, user.password_hash);
+    const comparePassword = await bcrypt.compare(password, user.password);
 
     if (!comparePassword) {
       return res.status(401).json({
@@ -68,7 +68,6 @@ export const login = async (req, res, next) => {
     accessExpiresAt.setMinutes(accessExpiresAt.getMinutes() + accessExpMinutes);
 
 
-    // Parallelize initial check for existing tokens
     const [[existingRefreshToken], [existingAccessToken]] = await Promise.all([
       db.query('SELECT id FROM refresh_tokens WHERE user_id = ?', [user.id]),
       db.query('SELECT id FROM access_tokens WHERE user_id = ?', [user.id])
@@ -76,7 +75,6 @@ export const login = async (req, res, next) => {
 
     const updateQueries = [];
 
-    // Handle Refresh Token
     if (existingRefreshToken.length) {
       updateQueries.push(db.query('UPDATE refresh_tokens SET token = ?, expires_at = ?, created_at = CURRENT_TIMESTAMP WHERE user_id = ?',
         [refreshToken, expiresAt, user.id]));
@@ -86,7 +84,6 @@ export const login = async (req, res, next) => {
         [user.id, refreshToken, expiresAt]));
     }
 
-    // Handle Access Token
     if (existingAccessToken.length) {
       updateQueries.push(db.query('UPDATE access_tokens SET access_token = ?, expiry_at = ?, created_at = CURRENT_TIMESTAMP WHERE user_id = ?',
         [accessToken, accessExpiresAt, user.id]));
@@ -96,7 +93,6 @@ export const login = async (req, res, next) => {
         [user.id, accessToken, accessExpiresAt]));
     }
 
-    // Execute all updates in parallel
     await Promise.all(updateQueries);
 
     return res.status(200).json({
@@ -119,7 +115,6 @@ export const getUsers = async (req, res, next) => {
     const { page = 1, limit = 10 } = req.query;
     const offset = (page - 1) * limit;
 
-    // Parallelize fetching users and the total count for pagination
     const [[users], [totalResult]] = await Promise.all([
       db.query(`SELECT id, name, email, role, created_at FROM users WHERE is_deleted = 0 AND id != ? ORDER BY created_at DESC LIMIT ? OFFSET ?`,
         [req.user.id, Number(limit), Number(offset)]),
@@ -187,7 +182,6 @@ export const deleteUser = async (req, res, next) => {
       });
     }
 
-    // Parallelize the cleanup of all related user records
     await Promise.all([
       db.query('DELETE FROM refresh_tokens WHERE user_id = ?', [id]),
       db.query('DELETE FROM access_tokens WHERE user_id = ?', [id]),
@@ -228,7 +222,6 @@ export const logout = async (req, res, next) => {
     }
     const userId = tokenRecord[0].user_id;
 
-    // Parallelize the deletion of both refresh and access tokens
     await Promise.all([
       db.query('DELETE FROM refresh_tokens WHERE user_id = ?', [userId]),
       db.query('DELETE FROM access_tokens WHERE user_id = ?', [userId])
