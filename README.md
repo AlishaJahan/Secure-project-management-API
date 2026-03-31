@@ -1,7 +1,5 @@
 # Secure-project-management-API
 
-# 🚀 Secure Project Management API
-
 A secure and scalable REST API for managing projects and tasks with authentication, authorization, and role-based access control.
 
 This project is built using **Node.js, Express, and MySQL**, implementing industry-level security practices like JWT authentication, refresh tokens, and role-based permissions.
