@@ -109,7 +109,7 @@ src/
 ├── models/
 ├── config/
 ├── utils/
-└── index.js
+└── server.js
 ```
 
 ---
