@@ -157,7 +157,7 @@ export const deleteUser = async (req, res, next) => {
     }
 
     const [targetUser] = await db.query('SELECT role FROM users WHERE id = ? AND is_deleted = 0', [id]);
-    if (!targetUser || !targetUser.length) {
+    if (targetUser.length) {
       return res.status(400).json({
         status: 400,
         message: "User already deleted.",

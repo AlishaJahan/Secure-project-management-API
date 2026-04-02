@@ -16,7 +16,7 @@ export const assignUserToProject = async (req, res, next) => {
 
     const [project] = await db.query('SELECT id FROM projects WHERE id = ? AND is_deleted = 0', [projectId]);
 
-    if (!project || !project.length) {
+    if (!project.length) {
       return res.status(404).json({
         status: 404,
         message: "Project not found or is deleted.",
@@ -165,7 +165,7 @@ export const getAssignedProjects = async (req, res, next) => {
             AND p.is_deleted = 0
         `, [userId]);
 
-    if (!assigned_projects || !assigned_projects.length) {
+    if (!assigned_projects.length) {
       return res.status(404).json({
         status: 404,
         message: "No projects found assigned to you.",
@@ -202,7 +202,7 @@ export const viewProjectById = async (req, res, next) => {
             `, [id, userId]);
     }
 
-    if (!project || !project.length) {
+    if (!project.length) {
       return res.status(404).json({
         status: 404,
         message: "Project not found or you are not authorized",
@@ -288,7 +288,7 @@ export const unassignUserFromProject = async (req, res, next) => {
     }
 
     const [project] = await db.query('SELECT id FROM projects WHERE id = ? AND is_deleted = 0', [projectId]);
-    if (!project || !project.length) {
+    if (!project.length) {
       return res.status(404).json({
         status: 404,
         message: "Project not found or is deleted.",

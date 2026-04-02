@@ -23,7 +23,7 @@ export const verifyToken = async (req, res, next) => {
     const [tokenRecord] = await db.query(
       'SELECT user_id FROM access_tokens WHERE access_token = ?', [token]
     );
-    if (!tokenRecord || !tokenRecord.length) {
+    if (!tokenRecord.length) {
       return res.status(401).json({
         status: 401,
         message: 'Session expired or account deleted. Please login again.',
@@ -32,7 +32,7 @@ export const verifyToken = async (req, res, next) => {
     }
 
     const [userRecord] = await db.query('SELECT id FROM users WHERE id = ? AND is_deleted = 0', [decoded.id]);
-    if (!userRecord || !userRecord.length) {
+    if (!userRecord.length) {
       return res.status(401).json({
         status: 401,
         message: 'Account no longer exists.',
