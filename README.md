@@ -22,6 +22,7 @@ This project is built using **Node.js, Express, and MySQL**, implementing indust
 ### 🔁 Token Management
 
 * Secure JWT implementation
+* Access token stored in database
 * Refresh token stored in database
 * Token rotation (old token invalidated on refresh)
 
